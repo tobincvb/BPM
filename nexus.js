@@ -55,14 +55,8 @@ const showSaveMsg = () => { const el=document.getElementById(‘save-msg’); if
 const upd = (key, fn) => { D[key] = fn(D[key]); save(); render(); };
 const addAudit = (action,type,title,detail) => { D.auditLog.unshift({id:`AU${uid()}`,timestamp:new Date().toLocaleString(),user:currentUser?.name||‘System’,action,entityType:type,entityTitle:title,detail}); D.auditLog=D.auditLog.slice(0,300); save(); };
 
-// ─── Seed Data ────────────────────────────────────────────────────────────────
-let D = {
-users:[
-{id:‘U1’,username:‘sarah.chen’,password:‘admin123’,role:‘admin’,name:‘Sarah Chen’,avatar:‘SC’,personId:‘P1’},
-{id:‘U2’,username:‘tom.nguyen’,password:‘user123’,role:‘user’,name:‘Tom Nguyen’,avatar:‘TN’,personId:‘P2’},
-{id:‘U3’,username:‘james.smith’,password:‘user123’,role:‘user’,name:‘James Smith’,avatar:‘JS’,personId:‘P3’},
-{id:‘U4’,username:‘admin’,password:‘admin’,role:‘admin’,name:‘Platform Admin’,avatar:‘PA’,personId:null},
-],
+// Seed data loaded from nexus-data.js
+let D = JSON.parse(JSON.stringify(SEED));
 people:[
 {id:‘P1’,name:‘Sarah Chen’,title:‘CEO’,dept:‘Executive’,reportsTo:null,email:‘s.chen@nexus.com’,location:‘Sydney’,avatar:‘SC’,bio:‘20 years financial services.’,skills:[‘Strategy’,‘Leadership’],enrolledCourses:[],completedCourses:[‘C1’]},
 {id:‘P2’,name:‘Tom Nguyen’,title:‘CTO’,dept:‘Technology’,reportsTo:‘P1’,email:‘t.nguyen@nexus.com’,location:‘Sydney’,avatar:‘TN’,bio:‘Full-stack engineer.’,skills:[‘AWS’,‘DevOps’],enrolledCourses:[‘C2’],completedCourses:[]},
