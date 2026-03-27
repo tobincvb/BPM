@@ -26,28 +26,11 @@ select,input,textarea{font-family:inherit;}
 <script>
 // localStorage storage shim
 window.storage={
-  get:k=>Promise.resolve((()=>{try{var v=localStorage.getItem('nx_'+k);return v?{value:v}:null;}catch(e){return null;}})()),
-  set:(k,v)=>Promise.resolve((()=>{try{localStorage.setItem('nx_'+k,v);return{key:k,value:v};}catch(e){return null;}})()),
-  delete:k=>Promise.resolve((()=>{try{localStorage.removeItem('nx_'+k);return{deleted:true};}catch(e){return null;}})()),
-  list:()=>Promise.resolve({keys:[]})
+  get:function(k){return Promise.resolve((function(){try{var v=localStorage.getItem('nx_'+k);return v?{value:v}:null;}catch(e){return null;}}()));},
+  set:function(k,v){return Promise.resolve((function(){try{localStorage.setItem('nx_'+k,v);return{key:k,value:v};}catch(e){return null;}}()));},
+  delete:function(k){return Promise.resolve((function(){try{localStorage.removeItem('nx_'+k);return{deleted:true};}catch(e){return null;}}()));},
+  list:function(){return Promise.resolve({keys:[]});}
 };
-
-// Load the JSX app file via fetch then transpile + eval
-fetch(‘app.jsx’)
-.then(r=>{
-if(!r.ok)throw new Error(‘Could not load app.jsx — HTTP ‘+r.status);
-return r.text();
-})
-.then(src=>{
-try{
-const code=Babel.transform(src,{presets:[‘react’]}).code;
-// eslint-disable-next-line no-new-func
-new Function(code)();
-}catch(e){
-showErr(‘Babel/runtime error:\n’+e.message+’\n’+(e.stack||’’));
-}
-})
-.catch(e=>showErr(‘Fetch error:\n’+e.message));
 
 function showErr(msg){
 document.getElementById(‘root’).style.display=‘none’;
@@ -55,6 +38,24 @@ var el=document.getElementById(‘err’);
 el.style.display=‘block’;
 el.textContent=msg;
 }
+
+// Fetch app.jsx, transpile with Babel, inject as a script tag
+fetch(‘app.jsx’)
+.then(function(r){
+if(!r.ok) throw new Error(‘Could not load app.jsx — HTTP ‘+r.status);
+return r.text();
+})
+.then(function(src){
+try{
+var code = Babel.transform(src, {presets:[‘react’]}).code;
+var script = document.createElement(‘script’);
+script.textContent = code;
+document.body.appendChild(script);
+} catch(e){
+showErr(‘Babel error:\n’+e.message+’\n’+(e.stack||’’));
+}
+})
+.catch(function(e){ showErr(‘Fetch error:\n’+e.message); });
 </script>
 
 </body>
