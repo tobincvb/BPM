@@ -381,6 +381,12 @@ const canEdit = () => getRole()==='admin';
 function initApp() {
   load();
   renderDemoAccounts();
+
+  // Wire up login button and enter key properly
+  document.getElementById('login-btn').addEventListener('click', doLogin);
+  document.getElementById('login-user').addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
+  document.getElementById('login-pass').addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
+
   renderHeader();
   setTab('Processes');
   document.addEventListener('keydown', e => {
@@ -390,12 +396,25 @@ function initApp() {
 }
 
 function renderDemoAccounts() {
-  document.getElementById('demo-accounts').innerHTML = [
+  const demos = [
     {l:'Admin',u:'sarah.chen',p:'admin123',c:'#6366f1'},
     {l:'Admin',u:'admin',p:'admin',c:'#6366f1'},
     {l:'User',u:'tom.nguyen',p:'user123',c:'#10b981'}
-  ].map(d => `<div onclick="document.getElementById('login-user').value='${d.u}';document.getElementById('login-pass').value='${d.p}';" style="display:flex;align-items:center;justify-content:space-between;padding:4px 7px;border-radius:6px;cursor:pointer;margin-bottom:2px;background:white;border:1px solid #f1f5f9;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='white'">
-    <span style="font-size:11px;color:#334155;">${d.u} / ${d.p}</span>${badge(d.l,d.c)}</div>`).join('');
+  ];
+  const container = document.getElementById('demo-accounts');
+  container.innerHTML = demos.map((d,i) =>
+    `<div data-di="${i}" style="display:flex;align-items:center;justify-content:space-between;padding:4px 7px;border-radius:6px;cursor:pointer;margin-bottom:2px;background:white;border:1px solid #f1f5f9;">
+      <span style="font-size:11px;color:#334155;">${d.u} / ${d.p}</span>${badge(d.l,d.c)}</div>`
+  ).join('');
+  container.querySelectorAll('[data-di]').forEach(el => {
+    const d = demos[+el.dataset.di];
+    el.addEventListener('mouseover', () => el.style.background='#f1f5f9');
+    el.addEventListener('mouseout',  () => el.style.background='white');
+    el.addEventListener('click', () => {
+      document.getElementById('login-user').value = d.u;
+      document.getElementById('login-pass').value = d.p;
+    });
+  });
 }
 
 function renderHeader() {
@@ -1022,21 +1041,13 @@ openModal(‘Profile’,` <div style="text-align:center;margin-bottom:16px;"> <d
 }
 
 // ─── Init ─────────────────────────────────────────────────────────────────────
-// Clear stale localStorage from previous broken versions, then reload seed
-try { localStorage.removeItem(‘nexus_v1’); } catch(e){}
-load();
-
-// Expose ALL functions to global window scope so onclick= attributes work
-const _fns = {doLogin,logout,exitPreview,setTab,render,closeModal,closeModalOverlay,
-toggleSearch,closeSearch,closeSearchOverlay,renderSearch,toggleNotifs,showProfile,
-procGoTo,polGoTo,oblGoTo,openProcModal,saveProcM,deleteProcM,openPolModal,savePolM,
-deletePolM,openOblModal,saveOblM,deleteOblM,openRiskModal,saveRiskM,deleteRiskM,
-openRaciModal,saveRaciM,openIncModal,saveIncM,openChgModal,saveChgM,openAssetModal,
-saveAssetM,openIssModal,saveIssM,deleteIssM,openPageModal,savePageM,deletePageM,
-openWorkflowModal,saveWfM,openProjModal,saveProjM,openUserModal,saveUserM,deleteUser,
-openPersonModal,addMapEl,toggleLinking,saveMapEl,deleteMapEl,mapMD,mapMM,mapMU,mapWheel,
-mapClickEl,nodeDown,nodeMove,nodeUp,enrollCourse,exportCSV,renderSearch,bindMapEvents};
-Object.assign(window, _fns);
+// Attach login button listener immediately when page loads
+document.addEventListener(‘DOMContentLoaded’, () => {
+renderDemoAccounts();
+document.getElementById(‘login-btn’).addEventListener(‘click’, doLogin);
+document.getElementById(‘login-user’).addEventListener(‘keydown’, e => { if(e.key===‘Enter’) doLogin(); });
+document.getElementById(‘login-pass’).addEventListener(‘keydown’, e => { if(e.key===‘Enter’) doLogin(); });
+});
 </script>
 
 </body>
