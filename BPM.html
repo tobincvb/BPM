@@ -1022,7 +1022,21 @@ openModal(‘Profile’,` <div style="text-align:center;margin-bottom:16px;"> <d
 }
 
 // ─── Init ─────────────────────────────────────────────────────────────────────
+// Clear stale localStorage from previous broken versions, then reload seed
+try { localStorage.removeItem(‘nexus_v1’); } catch(e){}
 load();
+
+// Expose ALL functions to global window scope so onclick= attributes work
+const _fns = {doLogin,logout,exitPreview,setTab,render,closeModal,closeModalOverlay,
+toggleSearch,closeSearch,closeSearchOverlay,renderSearch,toggleNotifs,showProfile,
+procGoTo,polGoTo,oblGoTo,openProcModal,saveProcM,deleteProcM,openPolModal,savePolM,
+deletePolM,openOblModal,saveOblM,deleteOblM,openRiskModal,saveRiskM,deleteRiskM,
+openRaciModal,saveRaciM,openIncModal,saveIncM,openChgModal,saveChgM,openAssetModal,
+saveAssetM,openIssModal,saveIssM,deleteIssM,openPageModal,savePageM,deletePageM,
+openWorkflowModal,saveWfM,openProjModal,saveProjM,openUserModal,saveUserM,deleteUser,
+openPersonModal,addMapEl,toggleLinking,saveMapEl,deleteMapEl,mapMD,mapMM,mapMU,mapWheel,
+mapClickEl,nodeDown,nodeMove,nodeUp,enrollCourse,exportCSV,renderSearch,bindMapEvents};
+Object.assign(window, _fns);
 </script>
 
 </body>
