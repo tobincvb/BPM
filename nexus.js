@@ -56,7 +56,7 @@ const upd = (key, fn) => { D[key] = fn(D[key]); save(); render(); };
 const addAudit = (action,type,title,detail) => { D.auditLog.unshift({id:`AU${uid()}`,timestamp:new Date().toLocaleString(),user:currentUser?.name||‘System’,action,entityType:type,entityTitle:title,detail}); D.auditLog=D.auditLog.slice(0,300); save(); };
 
 // Seed data loaded from nexus-data.js
-let D = JSON.parse(JSON.stringify(SEED));
+let D = SEED;
 people:[
 {id:‘P1’,name:‘Sarah Chen’,title:‘CEO’,dept:‘Executive’,reportsTo:null,email:‘s.chen@nexus.com’,location:‘Sydney’,avatar:‘SC’,bio:‘20 years financial services.’,skills:[‘Strategy’,‘Leadership’],enrolledCourses:[],completedCourses:[‘C1’]},
 {id:‘P2’,name:‘Tom Nguyen’,title:‘CTO’,dept:‘Technology’,reportsTo:‘P1’,email:‘t.nguyen@nexus.com’,location:‘Sydney’,avatar:‘TN’,bio:‘Full-stack engineer.’,skills:[‘AWS’,‘DevOps’],enrolledCourses:[‘C2’],completedCourses:[]},
@@ -320,10 +320,9 @@ return;
 }
 res.slice(0,10).forEach(r => {
 const div = document.createElement(‘div’);
+div.className = ‘search-result-row’;
 div.style.cssText = ‘display:flex;align-items:center;gap:10px;padding:9px 16px;cursor:pointer;’;
 div.innerHTML = ‘<span style="font-size:14px;width:20px;text-align:center;">’ + r.icon + ‘</span><span style="font-size:12px;font-weight:500;color:#334155;flex:1;">’ + esc(r.title) + ‘</span>’ + badge(r.type,’#6366f1’);
-div.addEventListener(‘mouseover’, () => div.style.background = ‘#f8fafc’);
-div.addEventListener(‘mouseout’,  () => div.style.background = ‘white’);
 div.addEventListener(‘click’, r.go);
 el.appendChild(div);
 });
@@ -386,14 +385,14 @@ else c.innerHTML = ‘<div style="padding:40px;color:#94a3b8;">Coming soon</div>
 bindDynamicEvents();
 }
 
-// After each render, bind events for dynamically injected buttons/links
+// After each render, bind subnav buttons
 function bindDynamicEvents() {
-// Subnav buttons
 document.querySelectorAll(’.subnav-btn[data-view]’).forEach(b => {
-b.addEventListener(‘click’, () => { activeSubViews[b.dataset.tab] = b.dataset.view; render(); });
+b.addEventListener(‘click’, () => {
+activeSubViews[b.dataset.tab] = b.dataset.view;
+render();
 });
-// Tab buttons (re-rendered inside tab-bar, already bound in renderHeader)
-// Map draw
+});
 drawMap();
 }
 
@@ -915,7 +914,7 @@ const pages = D.pages.filter(p=>p.projectId===activePrj);
 b.innerHTML = ‘<div style="flex:1;overflow-y:auto;padding:16px;"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;"><h2 style="font-weight:700;font-size:14px;margin:0;">Wiki</h2>’ +
 (canEdit() ? ‘<button class="btn btn-sm" id="new-page-btn">+ Page</button>’ : ‘’) + ‘</div>’ +
 ‘<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;">’ +
-pages.map(pg => ‘<div class="card" style="cursor:pointer;" data-pageid="' + pg.id + '" onmouseover="this.style.boxShadow=\'0 4px 12px rgba(0,0,0,.08)\'" onmouseout="this.style.boxShadow=\'0 1px 3px rgba(0,0,0,.04)\'"><div style="font-weight:700;font-size:13px;margin-bottom:4px;">📄 ’ + esc(pg.title) + ‘</div><div style="font-size:10px;color:#94a3b8;">’ + esc(pg.author) + ’ · ’ + esc(pg.updatedAt) + ‘</div></div>’).join(’’) + ‘</div></div>’;
+pages.map(pg => ‘<div class="card wiki-page-card" style="cursor:pointer;" data-pageid="' + pg.id + '"><div style="font-weight:700;font-size:13px;margin-bottom:4px;">📄 ’ + esc(pg.title) + ‘</div><div style="font-size:10px;color:#94a3b8;">’ + esc(pg.author) + ’ · ’ + esc(pg.updatedAt) + ‘</div></div>’).join(’’) + ‘</div></div>’;
 const np = b.querySelector(’#new-page-btn’); if (np) np.addEventListener(‘click’, () => openPageModal(null));
 b.querySelectorAll(’[data-pageid]’).forEach(card => card.addEventListener(‘click’, () => { pageView=D.pages.find(x=>x.id===card.dataset.pageid); render(); }));
 }
