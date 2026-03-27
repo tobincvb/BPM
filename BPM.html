@@ -196,7 +196,7 @@ textarea.inp{resize:vertical;}
   </div>
 </div>
 
-<script>
+<script defer>
 // ─── State ────────────────────────────────────────────────────────────────────
 let currentUser = null;
 let isPreview = false;
@@ -1041,13 +1041,10 @@ openModal(‘Profile’,` <div style="text-align:center;margin-bottom:16px;"> <d
 }
 
 // ─── Init ─────────────────────────────────────────────────────────────────────
-// Attach login button listener immediately when page loads
-document.addEventListener(‘DOMContentLoaded’, () => {
 renderDemoAccounts();
 document.getElementById(‘login-btn’).addEventListener(‘click’, doLogin);
 document.getElementById(‘login-user’).addEventListener(‘keydown’, e => { if(e.key===‘Enter’) doLogin(); });
 document.getElementById(‘login-pass’).addEventListener(‘keydown’, e => { if(e.key===‘Enter’) doLogin(); });
-});
 </script>
 
 </body>
