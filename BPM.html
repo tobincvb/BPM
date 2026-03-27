@@ -368,7 +368,12 @@ function doLogin() {
   currentUser = user;
   document.getElementById('login-screen').style.display = 'none';
   document.getElementById('app').classList.remove('hidden');
-  initApp();
+  renderHeader();
+  setTab('Processes');
+  document.addEventListener('keydown', e => {
+    if ((e.metaKey||e.ctrlKey) && e.key==='k') { e.preventDefault(); toggleSearch(); }
+    if (e.key==='Escape') { closeModal(); closeSearch(); showNotifsOpen=false; document.getElementById('notif-dropdown').classList.add('hidden'); }
+  });
 }
 document.getElementById('login-user').addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
 document.getElementById('login-pass').addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
@@ -378,22 +383,7 @@ function exitPreview() { isPreview=false; document.getElementById('preview-banne
 const getRole = () => isPreview ? 'user' : (currentUser?.role||'user');
 const canEdit = () => getRole()==='admin';
 
-function initApp() {
-  load();
-  renderDemoAccounts();
-
-  // Wire up login button and enter key properly
-  document.getElementById('login-btn').addEventListener('click', doLogin);
-  document.getElementById('login-user').addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
-  document.getElementById('login-pass').addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
-
-  renderHeader();
-  setTab('Processes');
-  document.addEventListener('keydown', e => {
-    if ((e.metaKey||e.ctrlKey) && e.key==='k') { e.preventDefault(); toggleSearch(); }
-    if (e.key==='Escape') { closeModal(); closeSearch(); showNotifsOpen=false; document.getElementById('notif-dropdown').classList.add('hidden'); }
-  });
-}
+function initApp() {}
 
 function renderDemoAccounts() {
   const demos = [
@@ -402,18 +392,19 @@ function renderDemoAccounts() {
     {l:'User',u:'tom.nguyen',p:'user123',c:'#10b981'}
   ];
   const container = document.getElementById('demo-accounts');
-  container.innerHTML = demos.map((d,i) =>
-    `<div data-di="${i}" style="display:flex;align-items:center;justify-content:space-between;padding:4px 7px;border-radius:6px;cursor:pointer;margin-bottom:2px;background:white;border:1px solid #f1f5f9;">
-      <span style="font-size:11px;color:#334155;">${d.u} / ${d.p}</span>${badge(d.l,d.c)}</div>`
-  ).join('');
-  container.querySelectorAll('[data-di]').forEach(el => {
-    const d = demos[+el.dataset.di];
-    el.addEventListener('mouseover', () => el.style.background='#f1f5f9');
-    el.addEventListener('mouseout',  () => el.style.background='white');
-    el.addEventListener('click', () => {
+  if (!container) return;
+  container.innerHTML = '';
+  demos.forEach(d => {
+    const div = document.createElement('div');
+    div.style.cssText = 'display:flex;align-items:center;justify-content:space-between;padding:4px 7px;border-radius:6px;cursor:pointer;margin-bottom:2px;background:white;border:1px solid #f1f5f9;';
+    div.innerHTML = `<span style="font-size:11px;color:#334155;">${d.u} / ${d.p}</span><span class="badge" style="background:${d.c}22;color:${d.c}">${d.l}</span>`;
+    div.addEventListener('mouseover', () => div.style.background='#f1f5f9');
+    div.addEventListener('mouseout',  () => div.style.background='white');
+    div.addEventListener('click', () => {
       document.getElementById('login-user').value = d.u;
       document.getElementById('login-pass').value = d.p;
     });
+    container.appendChild(div);
   });
 }
 
