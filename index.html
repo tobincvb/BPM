@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Nexus BPM</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="nexus.css"/>
+</head>
+<body>
+
+<!-- LOGIN -->
+
+<div id="login-screen">
+  <div class="login-box">
+    <div style="text-align:center;margin-bottom:24px;">
+      <div class="login-logo">⬡</div>
+      <h1 style="font-weight:900;font-size:20px;margin:0 0 4px;">Nexus Enterprise</h1>
+      <p style="font-size:12px;color:#64748b;">Business Process Management Platform</p>
+    </div>
+    <div class="field"><label>Username</label><input class="inp" id="login-user" placeholder="e.g. sarah.chen" style="font-size:14px;padding:10px 13px;"/></div>
+    <div class="field"><label>Password</label><input class="inp" id="login-pass" type="password" style="font-size:14px;padding:10px 13px;"/></div>
+    <div id="login-err" style="font-size:12px;color:#ef4444;margin-bottom:8px;font-weight:600;display:none;"></div>
+    <button id="login-btn" class="btn" style="width:100%;padding:11px;font-size:14px;">Sign In →</button>
+    <div style="margin-top:16px;padding:12px;background:#f8fafc;border-radius:9px;border:1px solid #e2e8f0;">
+      <p style="font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;margin:0 0 7px;">Demo Accounts</p>
+      <div id="demo-accounts"></div>
+    </div>
+  </div>
+</div>
+
+<!-- APP -->
+
+<div id="app" class="hidden">
+  <div id="preview-banner" class="hidden">
+    <span style="font-size:11px;color:white;font-weight:600;">👁 Previewing as User</span>
+    <button id="exit-preview-btn" class="btn btn-sm" style="background:rgba(255,255,255,.25);color:white;border:none;">Exit Preview</button>
+  </div>
+  <div id="header">
+    <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
+      <div style="width:26px;height:26px;border-radius:6px;background:linear-gradient(135deg,#6366f1,#8b5cf6);display:flex;align-items:center;justify-content:center;font-size:12px;">⬡</div>
+      <span style="font-weight:800;font-size:13px;">Nexus</span>
+      <span id="role-badge" class="badge"></span>
+      <span id="save-msg" style="font-size:10px;color:#10b981;display:none;">Saved ✓</span>
+    </div>
+    <div id="tab-bar"></div>
+    <div style="display:flex;align-items:center;gap:6px;flex-shrink:0;">
+      <button id="search-btn" class="btn btn-outline btn-sm">🔍 <span style="font-size:9px;background:#e2e8f0;padding:1px 4px;border-radius:3px;">⌘K</span></button>
+      <div style="position:relative;">
+        <button id="notif-btn" class="btn btn-outline btn-sm">🔔 <span id="notif-count" class="hidden" style="font-size:9px;background:#ef4444;color:white;border-radius:10px;padding:1px 4px;font-weight:700;margin-left:2px;"></span></button>
+        <div id="notif-dropdown" class="hidden"></div>
+      </div>
+      <div id="user-avatar" class="avatar"></div>
+      <button id="logout-btn" class="btn btn-outline btn-sm">↩</button>
+    </div>
+  </div>
+  <div id="content"></div>
+</div>
+
+<!-- MODAL -->
+
+<div id="modal-overlay" class="hidden">
+  <div id="modal-box" class="modal-box">
+    <div class="modal-header">
+      <span id="modal-title" style="font-weight:700;font-size:14px;"></span>
+      <button id="modal-close-btn" style="border:none;background:none;cursor:pointer;font-size:18px;color:#94a3b8;line-height:1;">×</button>
+    </div>
+    <div id="modal-body" class="modal-body"></div>
+  </div>
+</div>
+
+<!-- SEARCH -->
+
+<div id="search-overlay" class="hidden">
+  <div id="search-box">
+    <div id="search-input-row">
+      <span>🔍</span>
+      <input id="search-input" placeholder="Search processes, policies, risks, incidents…"/>
+      <span style="font-size:10px;color:#94a3b8;background:#f1f5f9;padding:2px 6px;border-radius:4px;">ESC</span>
+    </div>
+    <div id="search-results"></div>
+  </div>
+</div>
+
+<script src="nexus.js" defer></script>
+
+</body>
+</html>
